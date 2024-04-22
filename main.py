@@ -3,6 +3,8 @@ import sys
 from modules.info import Info
 
 app = QApplication(sys.argv)
-panel = Info()
-panel.show()
+
+panel = Info() 
+
 app.exec()
+
