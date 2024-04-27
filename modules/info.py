@@ -8,17 +8,17 @@ class Info(Panel):
         super(Info, self).__init__()
         self.setWindowTitle('microbar_info')
 
-        self.layout = QHBoxLayout()
-        self.setLayout(self.layout)
-
         self.label = QLabel()
         self.label.setFont(self.font)
         self.label.setStyleSheet(self.styleSheet)
-        self.layout.addWidget(self.label)
+
+        layout = QHBoxLayout()
+        layout.addWidget(self.label)
+        self.setLayout(layout)
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update)
-        self.timer.start(1000)
+        self.timer.start(1000) 
 
     def update(self):
         # print('updated: info', self.label.width())
