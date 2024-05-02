@@ -4,8 +4,8 @@ import psutil
 from core.panel import Panel
 
 class Info(Panel):
-    def __init__(self):
-        super(Info, self).__init__()
+    def __init__(self, config):
+        super(Info, self).__init__(config)
         self.setWindowTitle('microbar_info')
 
         self.label = QLabel()
