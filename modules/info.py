@@ -18,12 +18,12 @@ class Info(Panel):
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update)
-        self.timer.start(1000) 
+        self.timer.start(1000)
+
+        self.setFixedHeight(self.config['height'])
 
     def update(self):
-        # print('updated: info', self.label.width())
-
-        percentage = psutil.sensors_battery().percent
+        percentage = round(psutil.sensors_battery().percent)
         time = QDateTime.currentDateTime().toString('hh:mm:ss')
 
         self.label.setText('{0} {1}'.format(percentage, time))
