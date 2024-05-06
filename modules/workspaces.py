@@ -25,20 +25,23 @@ class Workspaces(Panel):
         super(Workspaces, self).__init__(config)
         self.setWindowTitle('microbar_workspaces')
 
+        self.layout = QHBoxLayout()
+        self.layout.setSpacing(0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+
+        self.setLayout(self.layout)
+        self.show()
+
     def update(self):
         i3 = i3ipc.Connection()
         workspaces = i3.get_workspaces()
 
-        layout = QHBoxLayout()
-        layout.setSpacing(0)
-        layout.setContentsMargins(0, 0, 0, 0)
+        for i in reversed(range(self.layout.count())):
+            self.layout.itemAt(i).widget().deleteLater()
 
         for workspace in workspaces:
             widget = Workspace(workspace, self.config)
             widget.label.setFont(self.font)
 
-            layout.addWidget(widget)
-
-        self.setLayout(layout)
-        self.show()
+            self.layout.addWidget(widget)
 
