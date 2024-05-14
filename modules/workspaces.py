@@ -1,6 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout
 from PyQt6.QtCore import Qt
-import i3ipc
 from core.panel import Panel
 
 class Workspace(QWidget):
@@ -32,10 +31,7 @@ class Workspaces(Panel):
         self.setLayout(self.layout)
         self.show()
 
-    def update(self):
-        i3 = i3ipc.Connection()
-        workspaces = i3.get_workspaces()
-
+    def update(self, workspaces):
         for i in reversed(range(self.layout.count())):
             self.layout.itemAt(i).widget().deleteLater()
 
