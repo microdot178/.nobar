@@ -8,16 +8,21 @@ from core.config import config
 from i3ipc.aio import Connection
 from i3ipc import Event
 
-def update_workspaces(i3, event, workspaces_panel):
-    workspaces_panel.update()
+async def update_workspaces(i3, event, workspaces_panel):
+    workspaces = await i3.get_workspaces()
+
+    workspaces_panel.update(workspaces)
 
 async def main():
-    i3 = await Connection().connect()
+    i3 = await Connection(auto_reconnect=True).connect()
 
     workspaces_panel = Workspaces(config['workspaces'])
     info_panel = Info(config['info'])
 
-    i3.on(Event.WINDOW, lambda i3, event: update_workspaces(i3, event, workspaces_panel))
+    async def event_handler(i3, event):
+        await update_workspaces(i3, event, workspaces_panel)
+
+    i3.on(Event.WORKSPACE_FOCUS, event_handler)
     await i3.main()
 
 if __name__ == "__main__":
