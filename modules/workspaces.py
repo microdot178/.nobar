@@ -2,15 +2,16 @@ from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout
 from PyQt6.QtCore import Qt
 from core.panel import Panel
 
+
 class Workspace(QWidget):
     def __init__(self, workspace, config):
         super(Workspace, self).__init__()
 
-        color = config['color']
-        focused = config['focused']
-        height = config['height']
+        color = config["color"]
+        focused = config["focused"]
+        height = config["height"]
 
-        styleSheet = 'color: {}'.format(focused if workspace.focused else color)
+        styleSheet = "color: {}".format(focused if workspace.focused else color)
 
         self.label = QLabel(workspace.name, self)
         self.label.setStyleSheet(styleSheet)
@@ -19,17 +20,17 @@ class Workspace(QWidget):
 
         self.setFixedSize(height, height)
 
+
 class Workspaces(Panel):
     def __init__(self, config):
         super(Workspaces, self).__init__(config)
-        self.setWindowTitle('microbar_workspaces')
+        self.setWindowTitle("microbar_workspaces")
 
         self.layout = QHBoxLayout()
         self.layout.setSpacing(0)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self.layout)
-        self.show()
 
     def update(self, workspaces):
         for i in reversed(range(self.layout.count())):
@@ -41,3 +42,4 @@ class Workspaces(Panel):
 
             self.layout.addWidget(widget)
 
+        self.set_position()
