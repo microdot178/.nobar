@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QHBoxLayout, QLabel
 from PyQt6.QtCore import QTimer, QDateTime
 import psutil
+from xkbgroup import XKeyboard
 from core.panel import Panel
 
 
@@ -24,9 +25,10 @@ class Info(Panel):
         self.setFixedHeight(self.config["height"])
 
     def set_content(self):
+        layout = XKeyboard().group_symbol.upper()
         percentage = round(psutil.sensors_battery().percent)
         time = QDateTime.currentDateTime().toString("hh:mm:ss")
 
-        self.label.setText("{0} {1}".format(percentage, time))
+        self.label.setText("{0} {1} {2}".format(layout, percentage, time))
 
         self.set_position()
