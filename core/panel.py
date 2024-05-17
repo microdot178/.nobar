@@ -40,5 +40,5 @@ class Panel(QWidget):
         self.adjustSize()
 
     @abstractmethod
-    def update(self):
+    def set_content(self, content=None):
         pass

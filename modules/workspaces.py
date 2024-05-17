@@ -6,6 +6,7 @@ from core.panel import Panel
 class Workspace(QWidget):
     def __init__(self, workspace, config):
         super(Workspace, self).__init__()
+        self.name = workspace.name
 
         color = config["color"]
         focused = config["focused"]
@@ -20,11 +21,15 @@ class Workspace(QWidget):
 
         self.setFixedSize(height, height)
 
+    def mousePressEvent(self, event):
+        self.connection.command(f"workspace {self.name}")
+
 
 class Workspaces(Panel):
-    def __init__(self, config):
+    def __init__(self, connection, config):
         super(Workspaces, self).__init__(config)
         self.setWindowTitle("microbar_workspaces")
+        self.connection = connection
 
         self.layout = QHBoxLayout()
         self.layout.setSpacing(0)
@@ -32,14 +37,13 @@ class Workspaces(Panel):
 
         self.setLayout(self.layout)
 
-    def update(self, workspaces):
+    def set_content(self, workspaces):
         for i in reversed(range(self.layout.count())):
             self.layout.itemAt(i).widget().deleteLater()
 
         for workspace in workspaces:
             widget = Workspace(workspace, self.config)
             widget.label.setFont(self.font)
+            widget.connection = self.connection
 
             self.layout.addWidget(widget)
-
-        self.set_position()
