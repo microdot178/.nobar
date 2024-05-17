@@ -5,6 +5,7 @@ import asyncio
 from modules.info import Info
 from modules.workspaces import Workspaces
 from core.config import get_config
+import i3ipc
 from i3ipc.aio import Connection
 from i3ipc import Event
 
@@ -12,14 +13,15 @@ from i3ipc import Event
 async def update_workspaces(i3, event, workspaces_panel):
     workspaces = await i3.get_workspaces()
 
-    workspaces_panel.update(workspaces)
+    workspaces_panel.set_content(workspaces)
+    workspaces_panel.set_position()
 
 
 async def main():
     i3 = await Connection(auto_reconnect=True).connect()
     config = get_config("config.toml")
 
-    workspaces_panel = Workspaces(config["workspaces"])
+    workspaces_panel = Workspaces(i3ipc.Connection(), config["workspaces"])
     info_panel = Info(config["info"])
 
     async def event_handler(i3, event):

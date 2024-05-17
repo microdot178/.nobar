@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QHBoxLayout, QLabel
-from PyQt6.QtCore import Qt, QTimer, QDateTime
+from PyQt6.QtCore import QTimer, QDateTime
 import psutil
 from core.panel import Panel
 
@@ -18,12 +18,12 @@ class Info(Panel):
         self.setLayout(layout)
 
         self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update)
+        self.timer.timeout.connect(self.set_content)
         self.timer.start(1000)
 
         self.setFixedHeight(self.config["height"])
 
-    def update(self):
+    def set_content(self):
         percentage = round(psutil.sensors_battery().percent)
         time = QDateTime.currentDateTime().toString("hh:mm:ss")
 
