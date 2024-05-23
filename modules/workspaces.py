@@ -27,9 +27,8 @@ class Workspace(QWidget):
 
 class Workspaces(Panel):
     def __init__(self, connection, config):
-        super(Workspaces, self).__init__(config)
+        super(Workspaces, self).__init__(connection, config)
         self.setWindowTitle("microbar_workspaces")
-        self.connection = connection
 
         self.layout = QHBoxLayout()
         self.layout.setSpacing(0)
@@ -37,7 +36,9 @@ class Workspaces(Panel):
 
         self.setLayout(self.layout)
 
-    def set_content(self, workspaces):
+    def set_content(self):
+        workspaces = self.connection.get_workspaces()
+
         for i in reversed(range(self.layout.count())):
             self.layout.itemAt(i).widget().deleteLater()
 
@@ -47,3 +48,14 @@ class Workspaces(Panel):
             widget.connection = self.connection
 
             self.layout.addWidget(widget)
+
+        if self.mode == "fade-out":
+            delay_seconds = self.config["fade-out"]
+
+            self.timer.setInterval(delay_seconds)
+
+        if not self.windowOpacity():
+            self.setWindowOpacity(1)
+
+        self.adjustSize()
+        self.set_position()
