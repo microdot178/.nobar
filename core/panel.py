@@ -1,13 +1,14 @@
 from PyQt6.QtWidgets import QWidget
 from abc import abstractmethod
 from PyQt6.QtGui import QGuiApplication, QFont, QPalette, QColor
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QTimer
 
 
 class Panel(QWidget):
-    def __init__(self, config):
+    def __init__(self, connection, config):
         super(Panel, self).__init__()
         self.setWindowFlag(Qt.WindowType.ToolTip)
+        self.connection = connection
 
         palette = self.palette()
         palette.setColor(QPalette.ColorRole.Window, QColor(config["background"]))
@@ -24,7 +25,16 @@ class Panel(QWidget):
         if "font-size" in config:
             self.font.setPointSize(config["font-size"])
 
+        if "fade-out" in config:
+            self.mode = "fade-out"
+            self.set_auto_hide_timer(config["fade-out"])
+
         self.show()
+
+    def set_auto_hide_timer(self, delay_seconds):
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(lambda: self.setWindowOpacity(0))
+        self.timer.start(delay_seconds)
 
     def set_position(self):
         position = self.config["position"]
@@ -37,7 +47,6 @@ class Panel(QWidget):
         y = height - self.height() if position[1] == "bottom" else position[1]
 
         self.move(x, y)
-        self.adjustSize()
 
     @abstractmethod
     def set_content(self, content=None):

@@ -10,22 +10,17 @@ from i3ipc.aio import Connection
 from i3ipc import Event
 
 
-async def update_workspaces(i3, event, workspaces_panel):
-    workspaces = await i3.get_workspaces()
-
-    workspaces_panel.set_content(workspaces)
-    workspaces_panel.set_position()
-
-
 async def main():
     i3 = await Connection(auto_reconnect=True).connect()
+    connection = i3ipc.Connection()
     config = get_config("config.toml")
 
-    workspaces_panel = Workspaces(i3ipc.Connection(), config["workspaces"])
-    info_panel = Info(config["info"])
+    workspaces_panel = Workspaces(connection, config["workspaces"])
+    info_panel = Info(connection, config["info"])
 
     async def event_handler(i3, event):
-        await update_workspaces(i3, event, workspaces_panel)
+        workspaces_panel.set_content()
+        info_panel.set_content()
 
     i3.on(Event.WORKSPACE_FOCUS, event_handler)
     await i3.main()

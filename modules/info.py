@@ -6,8 +6,8 @@ from core.panel import Panel
 
 
 class Info(Panel):
-    def __init__(self, config):
-        super(Info, self).__init__(config)
+    def __init__(self, connection, config):
+        super(Info, self).__init__(connection, config)
         self.setWindowTitle("microbar_info")
 
         self.label = QLabel()
@@ -25,10 +25,15 @@ class Info(Panel):
         self.setFixedHeight(self.config["height"])
 
     def set_content(self):
+        connection = self.connection
+        focused_workspace = connection.get_tree().find_focused().workspace().name
         layout = XKeyboard().group_symbol.upper()
         percentage = round(psutil.sensors_battery().percent)
         time = QDateTime.currentDateTime().toString("hh:mm:ss")
 
-        self.label.setText("{0} {1} {2}".format(layout, percentage, time))
+        self.label.setText(
+            "{0} {1} {2} {3}".format(focused_workspace, layout, percentage, time)
+        )
 
+        self.adjustSize()
         self.set_position()
