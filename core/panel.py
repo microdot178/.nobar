@@ -26,10 +26,21 @@ class Panel(QWidget):
             self.font.setPointSize(config["font-size"])
 
         if "fade-out" in config:
-            self.mode = "fade-out"
-            self.set_auto_hide_timer(config["fade-out"])
+            if config["fade-out"] == "hover":
+                self.mode = "fade-out-on-hover"
+            else:
+                self.mode = "fade-out"
+                self.set_auto_hide_timer(config["fade-out"])
 
         self.show()
+
+    def enterEvent(self, event):
+        if self.mode == "fade-out-on-hover":
+            self.setWindowOpacity(0)
+
+    def leaveEvent(self, event):
+        if self.mode == "fade-out-on-hover":
+            self.setWindowOpacity(1)
 
     def set_auto_hide_timer(self, delay_seconds):
         self.timer = QTimer(self)
