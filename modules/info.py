@@ -24,16 +24,18 @@ class Info(Panel):
 
         self.setFixedHeight(self.config["height"])
 
-    def set_content(self):
+    def set_content(self, event=None):
         connection = self.connection
         focused_workspace = connection.get_tree().find_focused().workspace().name
+
+        info = focused_workspace
         layout = XKeyboard().group_symbol.upper()
         percentage = round(psutil.sensors_battery().percent)
         time = QDateTime.currentDateTime().toString("hh:mm:ss")
 
-        self.label.setText(
-            "{0} {1} {2} {3}".format(focused_workspace, layout, percentage, time)
-        )
+        label = "{0} {1} {2} {3}".format(info, layout, percentage, time)
+
+        self.label.setText(label)
 
         self.adjustSize()
         self.set_position()

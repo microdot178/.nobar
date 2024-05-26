@@ -13,12 +13,14 @@ class Panel(QWidget):
         palette = self.palette()
         palette.setColor(QPalette.ColorRole.Window, QColor(config["background"]))
         self.setPalette(palette)
-        # self.setAutoFillBackground(True)
 
         self.font = QFont()
         self.styleSheet = "color: {}".format(config["color"])
-        self.config = config
 
+        self.read_config(config)
+        self.show()
+
+    def read_config(self, config):
         if "font" in config:
             self.font.setFamily(config["font"])
 
@@ -26,13 +28,14 @@ class Panel(QWidget):
             self.font.setPointSize(config["font-size"])
 
         if "fade-out" in config:
-            if config["fade-out"] == "hover":
-                self.mode = "fade-out-on-hover"
-            else:
-                self.mode = "fade-out"
-                self.set_auto_hide_timer(config["fade-out"])
+            self.mode = "fade-out"
+            self.set_auto_hide_timer(config["fade-out"])
 
-        self.show()
+        if "fade-out-on-hover" in config:
+            if config["fade-out-on-hover"]:
+                self.mode = "fade-out-on-hover"
+
+        self.config = config
 
     def enterEvent(self, event):
         if self.mode == "fade-out-on-hover":
