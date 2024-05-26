@@ -18,11 +18,14 @@ async def main():
     workspaces_panel = Workspaces(connection, config["workspaces"])
     info_panel = Info(connection, config["info"])
 
-    async def event_handler(i3, event):
+    async def event_handler(i3=None, event=None):
         workspaces_panel.set_content()
         info_panel.set_content()
 
+    await event_handler()
+
     i3.on(Event.WORKSPACE_FOCUS, event_handler)
+    i3.on("mode", event_handler)
     await i3.main()
 
 

@@ -3,17 +3,19 @@ import os
 
 DEFAULT_CONFIG = """
 [workspaces]
-height = 50
+height = 40
 color = 'gray'
 focused = 'white'
 background = 'black'
 position = [0, 0]
+fade-out = 5000
 
 [info]
-height = 50
+height = 40
 color = 'white'
 background = 'black'
 position = ['right', 0]
+fade-out-on-hover = true
 """
 
 
