@@ -1,7 +1,8 @@
-from PyQt6.QtWidgets import QHBoxLayout, QLabel
-from PyQt6.QtCore import QTimer, QDateTime
 import psutil
+from PyQt6.QtCore import QDateTime, QTimer
+from PyQt6.QtWidgets import QHBoxLayout, QLabel
 from xkbgroup import XKeyboard
+
 from core.panel import Panel
 
 
@@ -24,7 +25,7 @@ class Info(Panel):
 
         self.setFixedHeight(self.config["height"])
 
-    def set_content(self, event=None):
+    def set_content(self):
         connection = self.connection
         focused_workspace = connection.get_tree().find_focused().workspace().name
 

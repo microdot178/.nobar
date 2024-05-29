@@ -1,13 +1,15 @@
+import asyncio
+import sys
+
+import i3ipc
+from i3ipc import Event
+from i3ipc.aio import Connection
 from PyQt6.QtWidgets import QApplication
 from qasync import QEventLoop
-import sys
-import asyncio
+
+from core.config import get_config
 from modules.info import Info
 from modules.workspaces import Workspaces
-from core.config import get_config
-import i3ipc
-from i3ipc.aio import Connection
-from i3ipc import Event
 
 
 async def main():
