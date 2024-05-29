@@ -50,8 +50,8 @@ class Workspaces(Panel):
 
             self.layout.addWidget(widget)
 
-        if self.mode == "fade-out":
-            delay_seconds = self.config["fade-out"]
+        if self.mode == "fade_out":
+            delay_seconds = self.config["fade_out"]
 
             self.timer.setInterval(delay_seconds)
 
