@@ -1,5 +1,6 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout
 from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
+
 from core.panel import Panel
 
 
@@ -40,7 +41,7 @@ class Workspaces(Panel):
         workspaces = self.connection.get_workspaces()
 
         for i in reversed(range(self.layout.count())):
-            self.layout.itemAt(i).widget().deleteLater()
+            self.layout.itemAt(i).widget().setParent(None)
 
         for workspace in workspaces:
             widget = Workspace(workspace, self.config)

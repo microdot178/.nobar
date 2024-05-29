@@ -1,7 +1,8 @@
-from PyQt6.QtWidgets import QWidget
 from abc import abstractmethod
-from PyQt6.QtGui import QGuiApplication, QFont, QPalette, QColor
+
 from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QColor, QFont, QGuiApplication, QPalette
+from PyQt6.QtWidgets import QWidget
 
 
 class Panel(QWidget):

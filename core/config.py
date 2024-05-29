@@ -1,5 +1,6 @@
-import tomllib
 import os
+
+import tomllib
 
 DEFAULT_CONFIG = """
 [workspaces]
