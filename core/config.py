@@ -9,14 +9,14 @@ color = 'gray'
 focused = 'white'
 background = 'black'
 position = [0, 0]
-fade-out = 5000
+fade_out = 5000
 
 [info]
 height = 40
 color = 'white'
 background = 'black'
 position = ['right', 0]
-fade-out-on-hover = true
+fade_out_on_hover = true
 """
 
 
