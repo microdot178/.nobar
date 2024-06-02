@@ -1,3 +1,4 @@
+from i3ipc import con
 import psutil
 from PyQt6.QtCore import QDateTime, QTimer
 from PyQt6.QtWidgets import QHBoxLayout, QLabel
@@ -10,6 +11,7 @@ class Info(Panel):
     def __init__(self, connection, config):
         super(Info, self).__init__(connection, config)
         self.setWindowTitle("microbar_info")
+        self.resize_mode = False
 
         self.label = QLabel()
         self.label.setFont(self.font)
@@ -25,14 +27,25 @@ class Info(Panel):
 
         self.setFixedHeight(self.config["height"])
 
-    def set_content(self):
+    def set_content(self, event=None):
         connection = self.connection
         focused_workspace = connection.get_tree().find_focused().workspace().name
 
-        info = focused_workspace
         layout = XKeyboard().group_symbol.upper()
         percentage = round(psutil.sensors_battery().percent)
         time = QDateTime.currentDateTime().toString("hh:mm:ss")
+
+        if event:
+            if event.change == "resize":
+                self.resize_mode = True
+
+            if event.change == "default":
+                self.resize_mode = False
+
+        if self.resize_mode:
+            info = "resize"
+        else:
+            info = focused_workspace
 
         label = "{0} {1} {2} {3}".format(info, layout, percentage, time)
 

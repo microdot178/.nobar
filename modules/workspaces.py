@@ -55,8 +55,8 @@ class Workspaces(Panel):
 
             self.timer.setInterval(delay_seconds)
 
-        if not self.windowOpacity():
-            self.setWindowOpacity(1)
+        if self.isHidden():
+            self.show()
 
         self.adjustSize()
         self.set_position()

@@ -48,7 +48,7 @@ class Panel(QWidget):
 
     def set_auto_hide_timer(self, delay_seconds):
         self.timer = QTimer(self)
-        self.timer.timeout.connect(lambda: self.setWindowOpacity(0))
+        self.timer.timeout.connect(lambda: self.hide())
         self.timer.start(delay_seconds)
 
     def set_position(self):
@@ -64,5 +64,5 @@ class Panel(QWidget):
         self.move(x, y)
 
     @abstractmethod
-    def set_content(self, content=None):
+    def set_content(self, event=None):
         pass
