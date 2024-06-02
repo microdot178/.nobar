@@ -20,17 +20,20 @@ fade_out_on_hover = true
 """
 
 
-def create_default_config(config_filename):
-    with open(config_filename, "w") as f:
-        f.write(DEFAULT_CONFIG)
+class Config:
+    def __init__(self, config_filename=None):
+        self.config = self.get_config(config_filename)
 
+    def get_config(self, config_filename):
+        if not os.path.exists(config_filename):
+            self.create_default_config(config_filename)
+            print(f"Created default configuration file: {config_filename}")
 
-def get_config(config_filename):
-    if not os.path.exists(config_filename):
-        create_default_config(config_filename)
-        print(f"Created default configuration file: {config_filename}")
+        with open(config_filename, "rb") as f:
+            config = tomllib.load(f)
 
-    with open(config_filename, "rb") as f:
-        config = tomllib.load(f)
+        return config
 
-    return config
+    def create_default_config(self, config_filename):
+        with open(config_filename, "w") as f:
+            f.write(DEFAULT_CONFIG)

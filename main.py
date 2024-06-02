@@ -6,8 +6,9 @@ from i3ipc import Event
 from i3ipc.aio import Connection
 from PyQt6.QtWidgets import QApplication
 from qasync import QEventLoop
+from setproctitle import setproctitle
 
-from core.config import get_config
+from core.config import Config
 from modules.info import Info
 from modules.workspaces import Workspaces
 
@@ -15,14 +16,14 @@ from modules.workspaces import Workspaces
 async def main():
     i3 = await Connection(auto_reconnect=True).connect()
     connection = i3ipc.Connection()
-    config = get_config("config.toml")
+    config = Config(sys.argv[1]).config
 
     workspaces_panel = Workspaces(connection, config["workspaces"])
     info_panel = Info(connection, config["info"])
 
     async def event_handler(i3=None, event=None):
         workspaces_panel.set_content()
-        info_panel.set_content()
+        info_panel.set_content(event)
 
     await event_handler()
 
@@ -33,6 +34,7 @@ async def main():
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    setproctitle("microbar")
 
     event_loop = QEventLoop(app)
     asyncio.set_event_loop(event_loop)
