@@ -13,7 +13,7 @@ class Workspace(QWidget):
         focused = config["focused"]
         height = config["height"]
 
-        styleSheet = "color: {}".format(focused if workspace.focused else color)
+        styleSheet = f"color: {focused if workspace.focused else color}"
 
         self.label = QLabel(workspace.name, self)
         self.label.setStyleSheet(styleSheet)

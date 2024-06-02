@@ -27,10 +27,13 @@ class Config:
     def get_config(self, config_filename):
         if not os.path.exists(config_filename):
             self.create_default_config(config_filename)
+
             print(f"Created default configuration file: {config_filename}")
 
         with open(config_filename, "rb") as f:
             config = tomllib.load(f)
+
+            print(f"Loaded configuration file: {config_filename}")
 
         return config
 

@@ -1,5 +1,6 @@
 from abc import abstractmethod
 
+from i3ipc import ModeEvent, WindowEvent
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QColor, QFont, QGuiApplication, QPalette
 from PyQt6.QtWidgets import QWidget
@@ -10,6 +11,9 @@ class Panel(QWidget):
         super(Panel, self).__init__()
         self.setWindowFlag(Qt.WindowType.ToolTip)
         self.connection = connection
+
+        self.fullscreen_mode = False
+        self.resize_mode = False
 
         palette = self.palette()
         palette.setColor(QPalette.ColorRole.Window, QColor(config["background"]))
@@ -63,6 +67,23 @@ class Panel(QWidget):
 
         self.move(x, y)
 
+    def process_event(self, event=None):
+        if isinstance(event, WindowEvent):
+            self.fullscreen_mode = event.container.fullscreen_mode
+
+        if isinstance(event, ModeEvent):
+            if event.change == "resize":
+                self.resize_mode = True
+
+            if event.change == "default":
+                self.resize_mode = False
+
+        if self.fullscreen_mode:
+            self.hide()
+        else:
+            self.show()
+            self.set_content()
+
     @abstractmethod
-    def set_content(self, event=None):
+    def set_content(self):
         pass
