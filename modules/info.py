@@ -35,19 +35,12 @@ class Info(Panel):
         percentage = round(psutil.sensors_battery().percent)
         time = QDateTime.currentDateTime().toString("hh:mm:ss")
 
-        if event:
-            if event.change == "resize":
-                self.resize_mode = True
-
-            if event.change == "default":
-                self.resize_mode = False
-
         if self.resize_mode:
             info = "resize"
         else:
             info = focused_workspace
 
-        label = "{0} {1} {2} {3}".format(info, layout, percentage, time)
+        label = f"{info} {layout} {percentage} {time}"
 
         self.label.setText(label)
 
