@@ -1,4 +1,3 @@
-from i3ipc import con
 import psutil
 from PyQt6.QtCore import QDateTime, QTimer
 from PyQt6.QtWidgets import QHBoxLayout, QLabel
