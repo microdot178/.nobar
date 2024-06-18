@@ -40,6 +40,14 @@ class Workspaces(Panel):
     def set_content(self):
         workspaces = self.connection.get_workspaces()
 
+        def sort_key(workspace):
+            try:
+                return (0, int(workspace.name))
+            except ValueError:
+                return (1, workspace.name)
+
+        workspaces = sorted(workspaces, key=sort_key)
+
         for i in reversed(range(self.layout.count())):
             self.layout.itemAt(i).widget().setParent(None)
 

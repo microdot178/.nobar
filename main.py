@@ -28,8 +28,13 @@ async def main():
     async def event_handler_info(i3=None, event=None):
         info_panel.process_event(event)
 
-    await event_handler_general()
+    async def initialize_modules():
+        workspaces_panel.set_content()
+        info_panel.set_content()
 
+    await initialize_modules()
+
+    i3.on(Event.WINDOW_FOCUS, event_handler_general)
     i3.on(Event.WORKSPACE_FOCUS, event_handler_general)
     i3.on(Event.WINDOW_FULLSCREEN_MODE, event_handler_general)
     i3.on(Event.MODE, event_handler_info)

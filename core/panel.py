@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from i3ipc import ModeEvent, WindowEvent
+from i3ipc import ModeEvent, WindowEvent, WorkspaceEvent
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QColor, QFont, QGuiApplication, QPalette
 from PyQt6.QtWidgets import QWidget
@@ -69,7 +69,16 @@ class Panel(QWidget):
 
     def process_event(self, event=None):
         if isinstance(event, WindowEvent):
-            self.fullscreen_mode = event.container.fullscreen_mode
+            fullscreen_mode = event.container.fullscreen_mode
+
+            if self.fullscreen_mode != fullscreen_mode:
+                self.fullscreen_mode = fullscreen_mode
+
+                if fullscreen_mode:
+                    self.hide()
+                else:
+                    self.show()
+                    self.set_content()
 
         if isinstance(event, ModeEvent):
             if event.change == "resize":
@@ -78,10 +87,9 @@ class Panel(QWidget):
             if event.change == "default":
                 self.resize_mode = False
 
-        if self.fullscreen_mode:
-            self.hide()
-        else:
-            self.show()
+            self.set_content()
+
+        if isinstance(event, WorkspaceEvent):
             self.set_content()
 
     @abstractmethod
