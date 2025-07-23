@@ -1,7 +1,16 @@
-A sleek PyQt6 widget system, designed to replace the toolbar.
+A sleek PyQt6 widget system, designed to replace the toolbar - for use with i3wm.
 
 ![](./images/screenshot.png)
 
+![](./images/Screenshot_2025-07-24_01-56-15.png)
+
+![](./images/Screenshot_2025-07-24_01-58-28.png)
+
+![](./images/Screenshot_2025-07-24_02-00-14.png)
+
+![](./images/Screenshot_2025-07-24_02-01-40.png)
+
+![](./images/Screenshot_2025-07-24_02-04-05.png)
 Configuration:
 
 | Parameter           | Description                                                                                 | Widget | Value               |
