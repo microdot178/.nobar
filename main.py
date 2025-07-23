@@ -43,7 +43,7 @@ async def main():
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    setproctitle("microbar")
+    setproctitle("nobar")
 
     event_loop = QEventLoop(app)
     asyncio.set_event_loop(event_loop)
