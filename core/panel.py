@@ -1,12 +1,11 @@
-from abc import abstractmethod
-
 from i3ipc import ModeEvent, WindowEvent, WorkspaceEvent
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QColor, QFont, QGuiApplication, QPalette
 from PyQt6.QtWidgets import QWidget
 
+from interfaces.panel import PanelABC, PanelMeta
 
-class Panel(QWidget):
+class Panel(PanelABC, QWidget, metaclass=PanelMeta):
     def __init__(self, connection, config):
         super(Panel, self).__init__()
         self.setWindowFlag(Qt.WindowType.ToolTip)
@@ -41,14 +40,6 @@ class Panel(QWidget):
                 self.mode = "fade_out_on_hover"
 
         self.config = config
-
-    def enterEvent(self, event):
-        if self.mode == "fade_out_on_hover":
-            self.setWindowOpacity(0)
-
-    def leaveEvent(self, event):
-        if self.mode == "fade_out_on_hover":
-            self.setWindowOpacity(1)
 
     def set_auto_hide_timer(self, delay_seconds):
         self.timer = QTimer(self)
@@ -92,6 +83,3 @@ class Panel(QWidget):
         if isinstance(event, WorkspaceEvent):
             self.set_content()
 
-    @abstractmethod
-    def set_content(self):
-        pass
