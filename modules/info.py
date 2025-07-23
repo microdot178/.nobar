@@ -45,3 +45,11 @@ class Info(Panel):
 
         self.adjustSize()
         self.set_position()
+    
+    def enterEvent(self, event):
+        if self.mode == "fade_out_on_hover":
+            self.setWindowOpacity(0)
+
+    def leaveEvent(self, event):
+        if self.mode == "fade_out_on_hover":
+            self.setWindowOpacity(1)

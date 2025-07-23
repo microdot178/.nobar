@@ -6,7 +6,7 @@ Configuration:
 | ------------------- | ------------------------------------------------------------------------------------------- | ------ | ------------------- |
 | `height`            | Sets the height of the widget.                                                              | all    | int                 |
 | `font`              | Sets the font of the widget.                                                                | all    | string              |
-| `font-size`         | Sets the font size of the widget.                                                           | all    | int                 |
+| `font_size`         | Sets the font size of the widget.                                                           | all    | int                 |
 | `color`             | Sets the text color of the widget.                                                          | all    | string, hex, or RGB |
 | `background`        | Sets the background color of the widget.                                                    | all    | string, hex, or RGB |
 | `position`          | Sets the position of the widget on the screen.                                              | all    | [x, y]              |
