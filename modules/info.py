@@ -9,7 +9,7 @@ from core.panel import Panel
 class Info(Panel):
     def __init__(self, connection, config):
         super(Info, self).__init__(connection, config)
-        self.setWindowTitle("microbar_info")
+        self.setWindowTitle("nobar_info")
         self.resize_mode = False
 
         self.label = QLabel()
@@ -45,7 +45,7 @@ class Info(Panel):
 
         self.adjustSize()
         self.set_position()
-    
+
     def enterEvent(self, event):
         if self.mode == "fade_out_on_hover":
             self.setWindowOpacity(0)

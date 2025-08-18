@@ -29,7 +29,7 @@ class Workspace(QWidget):
 class Workspaces(Panel):
     def __init__(self, connection, config):
         super(Workspaces, self).__init__(connection, config)
-        self.setWindowTitle("microbar_workspaces")
+        self.setWindowTitle("nobar_workspaces")
 
         self.layout = QHBoxLayout()
         self.layout.setSpacing(0)
@@ -38,15 +38,13 @@ class Workspaces(Panel):
         self.setLayout(self.layout)
 
     def set_content(self):
-        workspaces = self.connection.get_workspaces()
-
         def sort_key(workspace):
             try:
                 return (0, int(workspace.name))
             except ValueError:
                 return (1, workspace.name)
 
-        workspaces = sorted(workspaces, key=sort_key)
+        workspaces = sorted(self.connection.get_workspaces(), key=sort_key)
 
         for i in reversed(range(self.layout.count())):
             self.layout.itemAt(i).widget().setParent(None)
@@ -68,3 +66,14 @@ class Workspaces(Panel):
 
         self.adjustSize()
         self.set_position()
+
+    def enterEvent(self, event):
+        if self.mode == "fade_out":
+            self.timer.stop()
+
+    def leaveEvent(self, event):
+        if self.mode == "fade_out":
+            delay_seconds = self.config["fade_out"]
+
+            self.timer.start(delay_seconds)
+
