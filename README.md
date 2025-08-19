@@ -13,7 +13,6 @@ A sleek PyQt6 widget system, designed to replace the toolbar - for use with i3wm
 
 2. Run the installation script:
    ```bash
-   chmod +x install.sh
    ./install.sh
    ```
 
@@ -29,14 +28,6 @@ After installation, you can run nobar with:
 ```bash
 nobar
 ```
-
-The executable will automatically use the configuration file at `~/.config/nobar/config.toml`.
-
-Make sure `~/.local/bin` is in your PATH. Add this to your `~/.bashrc` or `~/.zshrc`:
-```bash
-export PATH="$HOME/.local/bin:$PATH"
-```
-=======
 
 ## Configuration
 
