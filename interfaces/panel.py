@@ -1,9 +1,11 @@
+from abc import ABC, ABCMeta, abstractmethod
+
 from PyQt6.QtWidgets import QWidget
 
-from abc import ABC, ABCMeta, abstractmethod
 
 class PanelMeta(ABCMeta, type(QWidget)):
     pass
+
 
 class PanelABC(ABC):
     @abstractmethod
@@ -21,4 +23,3 @@ class PanelABC(ABC):
     @abstractmethod
     def process_event(self, event):
         pass
-

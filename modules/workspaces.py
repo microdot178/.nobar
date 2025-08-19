@@ -76,4 +76,3 @@ class Workspaces(Panel):
             delay_seconds = self.config["fade_out"]
 
             self.timer.start(delay_seconds)
-

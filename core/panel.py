@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QWidget
 
 from interfaces.panel import PanelABC, PanelMeta
 
+
 class Panel(PanelABC, QWidget, metaclass=PanelMeta):
     def __init__(self, connection, config):
         super(Panel, self).__init__()
@@ -82,4 +83,3 @@ class Panel(PanelABC, QWidget, metaclass=PanelMeta):
 
         if isinstance(event, WorkspaceEvent):
             self.set_content()
-
