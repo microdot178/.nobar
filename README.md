@@ -22,13 +22,6 @@ The installation script will:
 - Create Python virtual environment at `~/.virtualenvs/nobar/`
 - Install Python dependencies in the virtual environment
 
-## Usage
-
-After installation, you can run nobar with:
-```bash
-nobar
-```
-
 ## Configuration
 
 | Parameter           | Description                                                                                 | Widget | Value               |
