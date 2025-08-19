@@ -4,16 +4,39 @@ A sleek PyQt6 widget system, designed to replace the toolbar - for use with i3wm
 
 ## Installation
 
+1. Clone the project to your home directory:
+   ```bash
+   cd ~
+   git clone https://github.com/username/nobar.git
+   cd nobar
+   ```
+
+2. Run the installation script:
+   ```bash
+   chmod +x install.sh
+   ./install.sh
+   ```
+
 The installation script will:
 - Set up configuration directory at `~/.config/nobar/`
-- Install Python dependencies
+- Create executable file at `~/.local/bin/nobar`
+- Create Python virtual environment at `~/.virtualenvs/nobar/`
+- Install Python dependencies in the virtual environment
 
 ## Usage
 
 After installation, you can run nobar with:
 ```bash
-nobar ~/.config/nobar/config.toml
+nobar
 ```
+
+The executable will automatically use the configuration file at `~/.config/nobar/config.toml`.
+
+Make sure `~/.local/bin` is in your PATH. Add this to your `~/.bashrc` or `~/.zshrc`:
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+=======
 
 ## Configuration
 
