@@ -7,6 +7,7 @@ set -e
 CONFIG_DIR="$HOME/.config/nobar"
 BIN_DIR="$HOME/.local/bin"
 VENV_DIR="$HOME/.virtualenvs/nobar"
+CURRENT_DIR=$PWD
 
 mkdir -p "$CONFIG_DIR"
 mkdir -p "$BIN_DIR"
@@ -34,7 +35,7 @@ echo "Creating executable wrapper..."
 cat >"$BIN_DIR/nobar" <<EOF
 #!/bin/bash
 source $VENV_DIR/bin/activate
-python $PWD/main.py $CONFIG_DIR/config.toml
+python $CURRENT_DIR/main.py $CONFIG_DIR/config.toml
 EOF
 
 chmod +x "$BIN_DIR/nobar"
