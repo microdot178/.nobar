@@ -7,7 +7,7 @@ A sleek PyQt6 widget system, designed to replace the toolbar - for use with i3wm
 1. Clone the project to your home directory:
    ```bash
    cd ~
-   git clone https://github.com/username/nobar.git
+   git clone https://github.com/username/.nobar.git
    cd nobar
    ```
 
