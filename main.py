@@ -18,26 +18,23 @@ async def main():
     connection = i3ipc.Connection()
     config = Config(sys.argv[1]).config
 
-    workspaces_panel = Workspaces(connection, config["workspaces"])
-    info_panel = Info(connection, config["info"])
+    workspaces = Workspaces(connection, config["workspaces"])
+    info = Info(connection, config["info"])
 
-    async def event_handler_general(i3=None, event=None):
-        workspaces_panel.process_event(event)
-        info_panel.process_event(event)
+    def event_handler_general(i3=None, event=None):
+        workspaces.process_event(event)
+        info.process_event(event)
 
-    async def event_handler_info(i3=None, event=None):
-        info_panel.process_event(event)
-
-    async def initialize_modules():
-        workspaces_panel.set_content()
-        info_panel.set_content()
+    def event_handler_info(i3=None, event=None):
+        info.process_event(event)
 
     i3.on(Event.WINDOW_FOCUS, event_handler_general)
     i3.on(Event.WORKSPACE_FOCUS, event_handler_general)
     i3.on(Event.WINDOW_FULLSCREEN_MODE, event_handler_general)
     i3.on(Event.MODE, event_handler_info)
+    workspaces.set_content()
+    info.set_content()
 
-    await initialize_modules()
     await i3.main()
 
 

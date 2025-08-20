@@ -35,7 +35,7 @@ echo "Creating executable wrapper..."
 cat >"$BIN_DIR/nobar" <<EOF
 #!/bin/bash
 source $VENV_DIR/bin/activate
-python $CURRENT_DIR/main.py $CONFIG_DIR/config.toml
+python $CURRENT_DIR/main.py $CONFIG_DIR/config.toml &
 EOF
 
 chmod +x "$BIN_DIR/nobar"
