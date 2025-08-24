@@ -8,32 +8,29 @@ from PyQt6.QtWidgets import QApplication
 from qasync import QEventLoop
 from setproctitle import setproctitle
 
+from core.arguments import Arguments
 from core.config import Config
-from modules.info import Info
-from modules.workspaces import Workspaces
+from core.widgets import Widgets
 
 
 async def main():
     i3 = await Connection(auto_reconnect=True).connect()
     connection = i3ipc.Connection()
-    config = Config(sys.argv[1]).config
+    arguments = Arguments().arguments
+    config = Config(arguments.config).config
+    widgets = Widgets(arguments, connection, config).widgets
 
-    workspaces = Workspaces(connection, config["workspaces"])
-    info = Info(connection, config["info"])
+    def event_handler(i3=None, event=None):
+        for widget in widgets:
+            widget.process_event(event)
 
-    def event_handler_general(i3=None, event=None):
-        workspaces.process_event(event)
-        info.process_event(event)
+    i3.on(Event.WINDOW_FOCUS, event_handler)
+    i3.on(Event.WORKSPACE_FOCUS, event_handler)
+    i3.on(Event.WINDOW_FULLSCREEN_MODE, event_handler)
+    i3.on(Event.MODE, event_handler)
 
-    def event_handler_info(i3=None, event=None):
-        info.process_event(event)
-
-    i3.on(Event.WINDOW_FOCUS, event_handler_general)
-    i3.on(Event.WORKSPACE_FOCUS, event_handler_general)
-    i3.on(Event.WINDOW_FULLSCREEN_MODE, event_handler_general)
-    i3.on(Event.MODE, event_handler_info)
-    workspaces.set_content()
-    info.set_content()
+    for widget in widgets:
+        widget.set_content()
 
     await i3.main()
 

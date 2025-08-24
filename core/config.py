@@ -1,5 +1,4 @@
 import os
-
 import tomllib
 
 DEFAULT_CONFIG = """
@@ -25,6 +24,7 @@ class Config:
         self.config = self.get_config(config_filename)
 
     def get_config(self, config_filename):
+        """Load configuration from TOML file, creating default if it doesn't exist."""
         if not os.path.exists(config_filename):
             self.create_default_config(config_filename)
 
@@ -38,5 +38,6 @@ class Config:
         return config
 
     def create_default_config(self, config_filename):
+        """Create a default configuration file at the specified path."""
         with open(config_filename, "w") as f:
             f.write(DEFAULT_CONFIG)
