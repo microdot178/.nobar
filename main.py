@@ -16,6 +16,7 @@ from core.widgets import Widgets
 async def main():
     i3 = await Connection(auto_reconnect=True).connect()
     connection = i3ipc.Connection()
+
     arguments = Arguments().arguments
     config = Config(arguments.config).config
     widgets = Widgets(arguments, connection, config).widgets

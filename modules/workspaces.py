@@ -22,7 +22,7 @@ class Workspace(QWidget):
 
         self.setFixedSize(height, height)
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, a0):
         self.connection.command(f"workspace {self.name}")
 
 
@@ -56,7 +56,7 @@ class Workspaces(Panel):
 
             self.layout.addWidget(widget)
 
-        if self.mode == "fade_out":
+        if "fade_out" in self.options:
             delay_seconds = self.config["fade_out"]
 
             self.timer.setInterval(delay_seconds)
@@ -68,11 +68,11 @@ class Workspaces(Panel):
         self.set_position()
 
     def enterEvent(self, event):
-        if self.mode == "fade_out":
+        if "fade_out" in self.options:
             self.timer.stop()
 
-    def leaveEvent(self, event):
-        if self.mode == "fade_out":
+    def leaveEvent(self, a0):
+        if "fade_out" in self.options:
             delay_seconds = self.config["fade_out"]
 
             self.timer.start(delay_seconds)
