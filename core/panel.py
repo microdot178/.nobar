@@ -12,9 +12,9 @@ class Panel(PanelABC, QWidget, metaclass=PanelMeta):
         self.setWindowFlag(Qt.WindowType.ToolTip)
         self.connection = connection
 
-        self.state = 'default'
+        self.state = "default"
         self.options = []
- 
+
         palette = self.palette()
         palette.setColor(QPalette.ColorRole.Window, QColor(config["background"]))
         self.setPalette(palette)
