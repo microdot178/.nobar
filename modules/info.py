@@ -33,7 +33,7 @@ class Info(Panel):
         percentage = round(psutil.sensors_battery().percent)
         time = QDateTime.currentDateTime().toString("hh:mm:ss")
 
-        if self.state == 'resize' :
+        if self.state == "resize":
             info = self.state
         else:
             info = focused_workspace
