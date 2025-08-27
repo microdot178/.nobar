@@ -10,7 +10,6 @@ class Info(Panel):
     def __init__(self, connection, config):
         super(Info, self).__init__(connection, config)
         self.setWindowTitle("nobar_info")
-        self.resize_mode = False
 
         self.label = QLabel()
         self.label.setFont(self.font)
@@ -26,7 +25,7 @@ class Info(Panel):
 
         self.setFixedHeight(self.config["height"])
 
-    def set_content(self, event=None):
+    def set_content(self):
         connection = self.connection
         focused_workspace = connection.get_tree().find_focused().workspace().name
 
@@ -34,8 +33,8 @@ class Info(Panel):
         percentage = round(psutil.sensors_battery().percent)
         time = QDateTime.currentDateTime().toString("hh:mm:ss")
 
-        if self.resize_mode:
-            info = "resize"
+        if self.state == 'resize' :
+            info = self.state
         else:
             info = focused_workspace
 
@@ -47,9 +46,9 @@ class Info(Panel):
         self.set_position()
 
     def enterEvent(self, event):
-        if self.mode == "fade_out_on_hover":
+        if "fade_out_on_hover" in self.options:
             self.setWindowOpacity(0)
 
-    def leaveEvent(self, event):
-        if self.mode == "fade_out_on_hover":
+    def leaveEvent(self, a0):
+        if "fade_out_on_hover" in self.options:
             self.setWindowOpacity(1)

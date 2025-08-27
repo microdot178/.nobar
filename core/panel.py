@@ -12,9 +12,9 @@ class Panel(PanelABC, QWidget, metaclass=PanelMeta):
         self.setWindowFlag(Qt.WindowType.ToolTip)
         self.connection = connection
 
-        self.fullscreen_mode = False
-        self.resize_mode = False
-
+        self.state = 'default'
+        self.options = []
+ 
         palette = self.palette()
         palette.setColor(QPalette.ColorRole.Window, QColor(config["background"]))
         self.setPalette(palette)
@@ -33,12 +33,11 @@ class Panel(PanelABC, QWidget, metaclass=PanelMeta):
             self.font.setPointSize(config["font_size"])
 
         if "fade_out" in config:
-            self.mode = "fade_out"
+            self.options.append("fade_out")
             self.set_auto_hide_timer(config["fade_out"])
 
         if "fade_out_on_hover" in config:
-            if config["fade_out_on_hover"]:
-                self.mode = "fade_out_on_hover"
+            self.options.append("fade_out_on_hover")
 
         self.config = config
 
@@ -59,25 +58,16 @@ class Panel(PanelABC, QWidget, metaclass=PanelMeta):
 
         self.move(x, y)
 
-    def process_event(self, event=None):
+    def process_event(self, event):
         if isinstance(event, WindowEvent):
-            fullscreen_mode = event.container.fullscreen_mode
-
-            if self.fullscreen_mode != fullscreen_mode:
-                self.fullscreen_mode = fullscreen_mode
-
-                if fullscreen_mode:
-                    self.hide()
-                else:
-                    self.show()
-                    self.set_content()
+            if event.container.fullscreen_mode:
+                self.hide()
+            else:
+                self.show()
+                self.set_content()
 
         if isinstance(event, ModeEvent):
-            if event.change == "resize":
-                self.resize_mode = True
-
-            if event.change == "default":
-                self.resize_mode = False
+            self.state = event.change
 
             self.set_content()
 
