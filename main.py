@@ -30,9 +30,6 @@ async def main():
     i3.on(Event.WINDOW_FULLSCREEN_MODE, event_handler)
     i3.on(Event.MODE, event_handler)
 
-    for widget in widgets:
-        widget.set_content()
-
     await i3.main()
 
 

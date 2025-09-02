@@ -11,3 +11,7 @@ class Widgets:
 
         if "info" in arguments.widgets:
             self.widgets.append(Info(connection, config["info"]))
+
+        if "all" in arguments.widgets:
+            self.widgets.append(Workspaces(connection, config["workspaces"]))
+            self.widgets.append(Info(connection, config["info"]))

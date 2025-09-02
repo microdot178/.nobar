@@ -24,6 +24,7 @@ class Info(Panel):
         self.timer.start(1000)
 
         self.setFixedHeight(self.config["height"])
+        self.set_content()
 
     def set_content(self):
         connection = self.connection
