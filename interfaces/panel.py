@@ -1,5 +1,7 @@
 from abc import ABC, ABCMeta, abstractmethod
+from typing import List
 
+import i3ipc
 from i3ipc.events import IpcBaseEvent
 from PyQt6.QtCore import QEvent
 from PyQt6.QtGui import QEnterEvent
@@ -11,6 +13,26 @@ class PanelMeta(ABCMeta, type(QWidget)):
 
 
 class PanelABC(ABC):
+    @property
+    @abstractmethod
+    def config(self) -> dict:
+        pass
+
+    @property
+    @abstractmethod
+    def connection(self) -> i3ipc.Connection:
+        pass
+
+    @property
+    @abstractmethod
+    def state(self) -> str:
+        pass
+
+    @property
+    @abstractmethod
+    def options(self) -> List[str]:
+        pass
+
     @abstractmethod
     def read_config(self, config: dict) -> None:
         pass
