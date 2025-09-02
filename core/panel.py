@@ -1,3 +1,6 @@
+from typing import List
+
+import i3ipc
 from i3ipc import ModeEvent, WindowEvent, WorkspaceEvent
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QColor, QFont, QGuiApplication, QPalette
@@ -10,10 +13,10 @@ class Panel(PanelABC, QWidget, metaclass=PanelMeta):
     def __init__(self, connection, config):
         super(Panel, self).__init__()
         self.setWindowFlag(Qt.WindowType.ToolTip)
-        self.connection = connection
+        self._connection = connection
 
-        self.state = "default"
-        self.options = []
+        self._state = "default"
+        self._options = []
 
         palette = self.palette()
         palette.setColor(QPalette.ColorRole.Window, QColor(config["background"]))
@@ -24,6 +27,22 @@ class Panel(PanelABC, QWidget, metaclass=PanelMeta):
 
         self.read_config(config)
         self.show()
+
+    @property
+    def config(self) -> dict:
+        return self._config
+
+    @property
+    def connection(self) -> i3ipc.Connection:
+        return self._connection
+
+    @property
+    def state(self) -> str:
+        return self._state
+
+    @property
+    def options(self) -> List[str]:
+        return self._options
 
     def read_config(self, config):
         if "font" in config:
@@ -39,7 +58,7 @@ class Panel(PanelABC, QWidget, metaclass=PanelMeta):
         if "fade_out_on_hover" in config:
             self.options.append("fade_out_on_hover")
 
-        self.config = config
+        self._config = config
 
     def set_auto_hide_timer(self, delay_seconds):
         self.timer = QTimer(self)
@@ -67,7 +86,7 @@ class Panel(PanelABC, QWidget, metaclass=PanelMeta):
                 self.set_content()
 
         if isinstance(event, ModeEvent):
-            self.state = event.change
+            self._state = event.change
 
             self.set_content()
 
