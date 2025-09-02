@@ -36,6 +36,7 @@ class Workspaces(Panel):
         self.layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self.layout)
+        self.set_content()
 
     def set_content(self):
         def sort_key(workspace):

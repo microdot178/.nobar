@@ -1,5 +1,4 @@
 from abc import ABC, ABCMeta, abstractmethod
-from typing import List
 
 from i3ipc.events import Event
 from PyQt6.QtCore import QEvent

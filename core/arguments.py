@@ -16,7 +16,7 @@ class Arguments:
         self.parser.add_argument(
             "--widgets",
             nargs="*",
-            help="Array of active widget",
+            help="Array of active widget names",
         )
 
         self.arguments = self.parser.parse_args()
