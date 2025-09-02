@@ -9,6 +9,7 @@ from core.panel import Panel
 class Info(Panel):
     def __init__(self, connection, config):
         super(Info, self).__init__(connection, config)
+        self.name = "info"
         self.setWindowTitle("nobar_info")
 
         self.label = QLabel()

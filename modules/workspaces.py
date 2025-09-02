@@ -29,6 +29,7 @@ class Workspace(QWidget):
 class Workspaces(Panel):
     def __init__(self, connection, config):
         super(Workspaces, self).__init__(connection, config)
+        self.name = "workspaces"
         self.setWindowTitle("nobar_workspaces")
 
         self.layout = QHBoxLayout()
