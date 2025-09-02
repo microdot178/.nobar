@@ -1,9 +1,11 @@
 import asyncio
+import json
 import sys
 
 import i3ipc
 from i3ipc import Event
 from i3ipc.aio import Connection
+from i3ipc.events import IpcBaseEvent, TickEvent
 from PyQt6.QtWidgets import QApplication
 from qasync import QEventLoop
 from setproctitle import setproctitle
@@ -21,14 +23,31 @@ async def main():
     config = Config(arguments.config).config
     widgets = Widgets(arguments, connection, config).widgets
 
-    def event_handler(i3=None, event=None):
+    def event_handler(conn: Connection, event: IpcBaseEvent) -> None:
         for widget in widgets:
             widget.process_event(event)
+
+    def on_tick(conn: Connection, event: IpcBaseEvent) -> None:
+        if not isinstance(event, TickEvent):
+            return
+
+        try:
+            data = json.loads(event.payload)
+
+            if data.get("nobar"):
+                for widget in widgets:
+                    if widget.name == data["widget"]:
+                        method = getattr(widget, data["method"])
+                        method()
+
+        except json.JSONDecodeError:
+            pass
 
     i3.on(Event.WINDOW_FOCUS, event_handler)
     i3.on(Event.WORKSPACE_FOCUS, event_handler)
     i3.on(Event.WINDOW_FULLSCREEN_MODE, event_handler)
     i3.on(Event.MODE, event_handler)
+    i3.on("tick", on_tick)
 
     await i3.main()
 

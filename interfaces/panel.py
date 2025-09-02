@@ -1,6 +1,6 @@
 from abc import ABC, ABCMeta, abstractmethod
 
-from i3ipc.events import Event
+from i3ipc.events import IpcBaseEvent
 from PyQt6.QtCore import QEvent
 from PyQt6.QtGui import QEnterEvent
 from PyQt6.QtWidgets import QWidget
@@ -28,7 +28,7 @@ class PanelABC(ABC):
         pass
 
     @abstractmethod
-    def process_event(self, event: Event | None) -> None:
+    def process_event(self, event: IpcBaseEvent) -> None:
         pass
 
     @abstractmethod
