@@ -1,4 +1,5 @@
 import json
+from typing import Any, List, Optional
 
 import i3ipc
 from i3ipc import Event
@@ -11,20 +12,32 @@ from interfaces.app import AppABC
 
 class App(AppABC):
     def __init__(self, arguments, config):
-        self.i3 = None
-        self.connection = i3ipc.Connection()
-        self.widgets = Widgets(arguments, self.connection, config).widgets
+        self._i3 = None
+        self._connection = i3ipc.Connection()
+        self._widgets = Widgets(arguments, self._connection, config).widgets
+
+    @property
+    def i3(self) -> Optional[Connection]:
+        return self._i3
+
+    @property
+    def connection(self) -> i3ipc.Connection:
+        return self._connection
+
+    @property
+    def widgets(self) -> List[Any]:
+        return self._widgets
 
     async def start(self):
-        self.i3 = await Connection(auto_reconnect=True).connect()
+        self._i3 = await Connection(auto_reconnect=True).connect()
 
-        self.i3.on(Event.WINDOW_FOCUS, self.event_handler)
-        self.i3.on(Event.WORKSPACE_FOCUS, self.event_handler)
-        self.i3.on(Event.WINDOW_FULLSCREEN_MODE, self.event_handler)
-        self.i3.on(Event.MODE, self.event_handler)
-        self.i3.on("tick", self.on_tick)
+        self._i3.on(Event.WINDOW_FOCUS, self.event_handler)
+        self._i3.on(Event.WORKSPACE_FOCUS, self.event_handler)
+        self._i3.on(Event.WINDOW_FULLSCREEN_MODE, self.event_handler)
+        self._i3.on(Event.MODE, self.event_handler)
+        self._i3.on("tick", self.on_tick)
 
-        await self.i3.main()
+        await self._i3.main()
 
     def event_handler(self, conn, event):
         for widget in self.widgets:
