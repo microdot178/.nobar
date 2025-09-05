@@ -49,12 +49,20 @@ class App(AppABC):
 
         try:
             data = json.loads(event.payload)
-
-            if data.get("nobar"):
-                for widget in self.widgets:
-                    if widget.name == data["widget"]:
-                        method = getattr(widget, data["method"])
-                        method()
-
         except json.JSONDecodeError:
-            pass
+            return
+
+        if "nobar" not in data:
+            return
+
+        command = data["nobar"]
+
+        for widget in self.widgets:
+            if widget.name == command["widget"]:
+                if hasattr(widget, command["method"]):
+                    method = getattr(widget, command["method"])
+                    method()
+                else:
+                    print(
+                        f"Widget {widget.name} does not have method {command['method']}"
+                    )
