@@ -6,12 +6,10 @@ class Widgets:
     def __init__(self, arguments, connection, config):
         self.widgets = []
 
-        if "workspaces" in arguments.widgets:
+        widgets_list = arguments.widgets or ["all"]
+
+        if "workspaces" in widgets_list or "all" in widgets_list:
             self.widgets.append(Workspaces(connection, config["workspaces"]))
 
-        if "info" in arguments.widgets:
-            self.widgets.append(Info(connection, config["info"]))
-
-        if "all" in arguments.widgets:
-            self.widgets.append(Workspaces(connection, config["workspaces"]))
+        if "info" in widgets_list or "all" in widgets_list:
             self.widgets.append(Info(connection, config["info"]))
