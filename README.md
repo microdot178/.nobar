@@ -19,6 +19,7 @@ A sleek PyQt6 widget system, designed to replace the toolbar - for use with i3wm
 The installation script will:
 - Set up configuration directory at `~/.config/nobar/`
 - Create executable file at `~/.local/bin/nobar`
+- Create i3 command wrapper at `~/.local/bin/nobar_command`
 - Create Python virtual environment at `~/.virtualenvs/nobar/`
 - Install Python dependencies in the virtual environment
 
