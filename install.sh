@@ -35,10 +35,17 @@ echo "Creating executable wrapper..."
 cat >"$BIN_DIR/nobar" <<EOF
 #!/bin/bash
 source $VENV_DIR/bin/activate
-python $CURRENT_DIR/main.py $CONFIG_DIR/config.toml --widgets all &
+python $CURRENT_DIR/main.py $CONFIG_DIR/config.toml "$@" &
+EOF
+
+echo "Creating i3 command wrapper..."
+cat >"$BIN_DIR/nobar_command" <<EOF
+#!/bin/bash
+i3-msg -t send_tick '{"nobar":true,"widget":"'$1'","method":"'$2'"}'
 EOF
 
 chmod +x "$BIN_DIR/nobar"
+chmod +x "$BIN_DIR/nobar_command"
 
 echo "Installing Python dependencies..."
 python -m venv $VENV_DIR
