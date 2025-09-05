@@ -41,7 +41,7 @@ EOF
 echo "Creating i3 command wrapper..."
 cat >"$BIN_DIR/nobar_command" <<EOF
 #!/bin/bash
-i3-msg -t send_tick '{"nobar":true,"widget":"'$1'","method":"'$2'"}'
+i3-msg -t send_tick '{"nobar":{"widget":"'$1'","method":"'$2'"}}'
 EOF
 
 chmod +x "$BIN_DIR/nobar"
