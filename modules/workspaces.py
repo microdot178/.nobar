@@ -1,3 +1,4 @@
+from i3ipc import WorkspaceEvent
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
@@ -63,11 +64,15 @@ class Workspaces(Panel):
 
             self.timer.setInterval(delay_seconds)
 
-        if self.isHidden():
-            self.show()
-
         self.adjustSize()
         self.set_position()
+
+    def process_event(self, event):
+        match event:
+            case WorkspaceEvent():
+                self.set_content()
+
+        super().process_event(event)
 
     def enterEvent(self, event):
         if "fade_out" in self.options:

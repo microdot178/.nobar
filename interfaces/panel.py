@@ -54,6 +54,10 @@ class PanelABC(ABC):
         pass
 
     @abstractmethod
+    def handle_fullscreen_mode(self) -> None:
+        pass
+
+    @abstractmethod
     def enterEvent(self, event: QEnterEvent | None) -> None:
         pass
 

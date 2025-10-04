@@ -1,7 +1,6 @@
 from typing import List
 
 import i3ipc
-from i3ipc import ModeEvent, WindowEvent, WorkspaceEvent
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QColor, QFont, QGuiApplication, QPalette
 from PyQt6.QtWidgets import QWidget
@@ -67,28 +66,30 @@ class Panel(PanelABC, QWidget, metaclass=PanelMeta):
 
     def set_position(self):
         position = self.config["position"]
+        screen = self.config["screen"]
 
-        screen = QGuiApplication.primaryScreen().size()
-        width = screen.width()
-        height = screen.height()
+        geometry = QGuiApplication.screens()[screen].geometry()
+        width = geometry.x() + geometry.width()
+        height = geometry.y() + geometry.height()
 
         x = width - self.width() if position[0] == "right" else position[0]
         y = height - self.height() if position[1] == "bottom" else position[1]
 
         self.move(x, y)
 
+    def handle_fullscreen_mode(self):
+        outputs = self.connection.get_outputs()
+        tree = self.connection.get_tree()
+        screen = self.config["screen"]
+
+        for workspace in tree.workspaces():
+            if workspace.name == outputs[screen].current_workspace:
+                if any(con.fullscreen_mode != 0 for con in workspace.leaves()):
+                    self.hide()
+                else:
+                    self.show()
+                    self.set_content()
+
     def process_event(self, event):
-        if isinstance(event, WindowEvent):
-            if event.container.fullscreen_mode:
-                self.hide()
-            else:
-                self.show()
-                self.set_content()
-
-        if isinstance(event, ModeEvent):
-            self._state = event.change
-
-            self.set_content()
-
-        if isinstance(event, WorkspaceEvent):
-            self.set_content()
+        """Handle common events for all panel-type widgets."""
+        self.handle_fullscreen_mode()

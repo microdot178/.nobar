@@ -1,4 +1,5 @@
 import psutil
+from i3ipc import ModeEvent
 from PyQt6.QtCore import QDateTime, QTimer
 from PyQt6.QtWidgets import QHBoxLayout, QLabel
 from xkbgroup import XKeyboard
@@ -46,6 +47,14 @@ class Info(Panel):
 
         self.adjustSize()
         self.set_position()
+
+    def process_event(self, event):
+        match event:
+            case ModeEvent():
+                self._state = event.change
+                self.set_content()
+
+        super().process_event(event)
 
     def enterEvent(self, event):
         if "fade_out_on_hover" in self.options:

@@ -57,6 +57,9 @@ class App(AppABC):
 
         command = data["nobar"]
 
+        if not isinstance(command, dict):
+            return
+
         for widget in self.widgets:
             if widget.name == command["widget"]:
                 if hasattr(widget, command["method"]):
