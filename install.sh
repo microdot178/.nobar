@@ -21,6 +21,7 @@ color = 'gray'
 focused = 'white'
 background = 'black'
 position = [0, 0]
+screen = 0
 fade_out = 5000
 
 [info]
@@ -28,6 +29,7 @@ height = 40
 color = 'white'
 background = 'black'
 position = ['right', 0]
+screen = 0
 fade_out_on_hover = true
 EOF
 
@@ -35,13 +37,13 @@ echo "Creating executable wrapper..."
 cat >"$BIN_DIR/nobar" <<EOF
 #!/bin/bash
 source $VENV_DIR/bin/activate
-python $CURRENT_DIR/main.py $CONFIG_DIR/config.toml "$@" &
+python $CURRENT_DIR/src/nobar/main.py $CONFIG_DIR/config.toml "\$@" &
 EOF
 
 echo "Creating i3 command wrapper..."
-cat >"$BIN_DIR/nobar_command" <<EOF
+cat >"$BIN_DIR/nobar_command" <<'EOF'
 #!/bin/bash
-i3-msg -t send_tick '{"nobar":{"widget":"'$1'","method":"'$2'"}}'
+i3-msg -t send_tick '{"nobar":{"widget":"'"$1"'","method":"'"$2"'"}}'
 EOF
 
 chmod +x "$BIN_DIR/nobar"

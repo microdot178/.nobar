@@ -1,35 +1,59 @@
+"""Workspace navigation widget displaying i3 workspaces."""
+
+from __future__ import annotations
+
+import i3ipc
 from i3ipc import WorkspaceEvent
-from PyQt6.QtCore import Qt
+from i3ipc.events import IpcBaseEvent
+from PyQt6.QtCore import QEvent, Qt
+from PyQt6.QtGui import QEnterEvent, QMouseEvent
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
-from core.panel import Panel
+from nobar.core.panel import Panel
 
 
 class Workspace(QWidget):
-    def __init__(self, workspace, config):
-        super(Workspace, self).__init__()
+    """Single clickable workspace button."""
+
+    def __init__(self, workspace: i3ipc.WorkspaceReply, config: dict) -> None:
+        """Initialize workspace button with label and styling.
+
+        Args:
+            workspace: i3 workspace reply object.
+            config: Widget-specific configuration dict.
+        """
+        super().__init__()
         self.name = workspace.name
 
         color = config["color"]
         focused = config["focused"]
         height = config["height"]
 
-        styleSheet = f"color: {focused if workspace.focused else color}"
+        style_sheet = f"color: {focused if workspace.focused else color}"
 
         self.label = QLabel(workspace.name, self)
-        self.label.setStyleSheet(styleSheet)
+        self.label.setStyleSheet(style_sheet)
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label.setGeometry(0, 0, height, height)
 
         self.setFixedSize(height, height)
 
-    def mousePressEvent(self, a0):
+    def mousePressEvent(self, a0: QMouseEvent | None) -> None:  # noqa: N802
+        """Switch to this workspace on click."""
         self.connection.command(f"workspace {self.name}")
 
 
 class Workspaces(Panel):
-    def __init__(self, connection, config):
-        super(Workspaces, self).__init__(connection, config)
+    """Panel widget displaying all i3 workspaces as clickable buttons."""
+
+    def __init__(self, connection: i3ipc.Connection, config: dict) -> None:
+        """Initialize workspaces panel with horizontal layout.
+
+        Args:
+            connection: Synchronous i3 IPC connection.
+            config: Widget-specific configuration dict.
+        """
+        super().__init__(connection, config)
         self.name = "workspaces"
         self.setWindowTitle("nobar_workspaces")
 
@@ -40,8 +64,10 @@ class Workspaces(Panel):
         self.setLayout(self.layout)
         self.set_content()
 
-    def set_content(self):
-        def sort_key(workspace):
+    def set_content(self) -> None:
+        """Rebuild workspace buttons from current i3 state."""
+
+        def sort_key(workspace: i3ipc.WorkspaceReply) -> tuple[int, int | str]:
             try:
                 return (0, int(workspace.name))
             except ValueError:
@@ -67,18 +93,25 @@ class Workspaces(Panel):
         self.adjustSize()
         self.set_position()
 
-    def process_event(self, event):
+    def process_event(self, event: IpcBaseEvent) -> None:
+        """Rebuild workspace buttons on workspace events.
+
+        Args:
+            event: Incoming i3 event.
+        """
         match event:
             case WorkspaceEvent():
                 self.set_content()
 
         super().process_event(event)
 
-    def enterEvent(self, event):
+    def enterEvent(self, event: QEnterEvent | None) -> None:  # noqa: N802
+        """Stop auto-hide timer on mouse enter."""
         if "fade_out" in self.options:
             self.timer.stop()
 
-    def leaveEvent(self, a0):
+    def leaveEvent(self, a0: QEvent | None) -> None:  # noqa: N802
+        """Restart auto-hide timer on mouse leave."""
         if "fade_out" in self.options:
             delay_seconds = self.config["fade_out"]
 

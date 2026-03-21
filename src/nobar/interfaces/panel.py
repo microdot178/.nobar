@@ -1,5 +1,8 @@
+"""Abstract interface for panel widgets."""
+
+from __future__ import annotations
+
 from abc import ABC, ABCMeta, abstractmethod
-from typing import List
 
 import i3ipc
 from i3ipc.events import IpcBaseEvent
@@ -9,58 +12,60 @@ from PyQt6.QtWidgets import QWidget
 
 
 class PanelMeta(ABCMeta, type(QWidget)):
-    pass
+    """Metaclass resolving ABC and QWidget metaclass conflict."""
 
 
 class PanelABC(ABC):
+    """Abstract base class defining the panel widget interface."""
+
     @property
     @abstractmethod
     def config(self) -> dict:
-        pass
+        """Widget configuration dict."""
 
     @property
     @abstractmethod
     def connection(self) -> i3ipc.Connection:
-        pass
+        """Synchronous i3 IPC connection."""
 
     @property
     @abstractmethod
     def state(self) -> str:
-        pass
+        """Current widget state."""
 
     @property
     @abstractmethod
-    def options(self) -> List[str]:
-        pass
+    def options(self) -> list[str]:
+        """Active widget options."""
 
     @abstractmethod
     def read_config(self, config: dict) -> None:
-        pass
+        """Apply configuration options."""
 
     @abstractmethod
     def set_auto_hide_timer(self, delay_seconds: int) -> None:
-        pass
+        """Set up auto-hide timer."""
 
     @abstractmethod
     def set_position(self) -> None:
-        pass
+        """Position widget on screen."""
 
     @abstractmethod
     def set_content(self) -> None:
-        pass
+        """Update widget content."""
 
     @abstractmethod
     def process_event(self, event: IpcBaseEvent) -> None:
-        pass
+        """Handle incoming i3 event."""
 
     @abstractmethod
     def handle_fullscreen_mode(self) -> None:
-        pass
+        """Handle fullscreen mode changes."""
 
     @abstractmethod
-    def enterEvent(self, event: QEnterEvent | None) -> None:
-        pass
+    def enterEvent(self, event: QEnterEvent | None) -> None:  # noqa: N802
+        """Handle mouse enter event."""
 
     @abstractmethod
-    def leaveEvent(self, a0: QEvent | None) -> None:
-        pass
+    def leaveEvent(self, a0: QEvent | None) -> None:  # noqa: N802
+        """Handle mouse leave event."""

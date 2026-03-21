@@ -1,3 +1,7 @@
+"""Entry point for the nobar widget system."""
+
+from __future__ import annotations
+
 import asyncio
 import sys
 
@@ -5,12 +9,13 @@ from PyQt6.QtWidgets import QApplication
 from qasync import QEventLoop
 from setproctitle import setproctitle
 
-from core.app import App
-from core.arguments import Arguments
-from core.config import Config
+from nobar.core.app import App
+from nobar.core.arguments import Arguments
+from nobar.core.config import Config
 
 
-async def main():
+async def main() -> None:
+    """Initialize and start the application."""
     arguments = Arguments().arguments
     config = Config(arguments.config).config
     app = App(arguments, config)

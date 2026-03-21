@@ -1,8 +1,15 @@
+"""CLI argument parsing for nobar."""
+
+from __future__ import annotations
+
 import argparse
 
 
 class Arguments:
-    def __init__(self):
+    """Parse and store command-line arguments."""
+
+    def __init__(self) -> None:
+        """Set up argument parser and parse CLI args."""
         self.parser = argparse.ArgumentParser(
             description="nobar - a sleek PyQt6 widget system for i3wm",
             formatter_class=argparse.RawDescriptionHelpFormatter,
