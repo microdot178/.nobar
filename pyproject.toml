@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "nobar"
 version = "0.0.1"
-description = "A sleek PyQt6 widget system for i3wm"
+description = "A PyQt6 widget system for i3wm"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [

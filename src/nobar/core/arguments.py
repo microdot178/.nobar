@@ -11,7 +11,7 @@ class Arguments:
     def __init__(self) -> None:
         """Set up argument parser and parse CLI args."""
         self.parser = argparse.ArgumentParser(
-            description="nobar - a sleek PyQt6 widget system for i3wm",
+            description="nobar - a PyQt6 widget system for i3wm",
             formatter_class=argparse.RawDescriptionHelpFormatter,
         )
 

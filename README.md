@@ -1,4 +1,4 @@
-A sleek PyQt6 widget system, designed to replace the toolbar - for use with i3wm.
+A PyQt6 widget system, designed to replace the toolbar - for use with i3wm.
 
 ![screenshot](./images/screenshot.png)
 
