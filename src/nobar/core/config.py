@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import os
+from pathlib import Path
 
 import tomllib
 
-DEFAULT_CONFIG = """
+DEFAULT_CONFIG = """\
 [workspaces]
 height = 40
 color = 'gray'
@@ -26,43 +26,16 @@ fade_out_on_hover = true
 """
 
 
-class Config:
-    """Load and manage TOML configuration."""
+def load_config(path: str) -> dict:
+    """Load TOML config, creating default if missing."""
+    config_path = Path(path)
 
-    def __init__(self, config_filename: str | None = None) -> None:
-        """Initialize config from a TOML file.
+    if not config_path.exists():
+        config_path.write_text(DEFAULT_CONFIG)
+        print(f"Created default configuration file: {path}")
 
-        Args:
-            config_filename: Path to the configuration file.
-        """
-        self.config = self.get_config(config_filename)
+    with config_path.open("rb") as f:
+        config = tomllib.load(f)
 
-    def get_config(self, config_filename: str | None) -> dict:
-        """Load configuration from TOML file, creating default if it doesn't exist.
-
-        Args:
-            config_filename: Path to the configuration file.
-
-        Returns:
-            Parsed configuration dict.
-        """
-        if not os.path.exists(config_filename):
-            self.create_default_config(config_filename)
-
-            print(f"Created default configuration file: {config_filename}")
-
-        with open(config_filename, "rb") as f:
-            config = tomllib.load(f)
-
-            print(f"Loaded configuration file: {config_filename}")
-
-        return config
-
-    def create_default_config(self, config_filename: str | None) -> None:
-        """Create a default configuration file at the specified path.
-
-        Args:
-            config_filename: Path to write the default config.
-        """
-        with open(config_filename, "w") as f:
-            f.write(DEFAULT_CONFIG)
+    print(f"Loaded configuration file: {path}")
+    return config

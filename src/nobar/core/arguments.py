@@ -5,25 +5,21 @@ from __future__ import annotations
 import argparse
 
 
-class Arguments:
-    """Parse and store command-line arguments."""
+def parse_arguments() -> argparse.Namespace:
+    """Parse and return CLI arguments."""
+    parser = argparse.ArgumentParser(
+        description="nobar - a PyQt6 widget system for i3wm",
+    )
 
-    def __init__(self) -> None:
-        """Set up argument parser and parse CLI args."""
-        self.parser = argparse.ArgumentParser(
-            description="nobar - a PyQt6 widget system for i3wm",
-            formatter_class=argparse.RawDescriptionHelpFormatter,
-        )
+    parser.add_argument(
+        "config",
+        help="Path to configuration file (e.g., ~/.config/nobar/config.toml)",
+    )
 
-        self.parser.add_argument(
-            "config",
-            help="Path to configuration file (e.g., ~/.config/nobar/config.toml)",
-        )
+    parser.add_argument(
+        "--widgets",
+        nargs="*",
+        help="Array of active widget names",
+    )
 
-        self.parser.add_argument(
-            "--widgets",
-            nargs="*",
-            help="Array of active widget names",
-        )
-
-        self.arguments = self.parser.parse_args()
+    return parser.parse_args()

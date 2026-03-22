@@ -10,14 +10,14 @@ from qasync import QEventLoop
 from setproctitle import setproctitle
 
 from nobar.core.app import App
-from nobar.core.arguments import Arguments
-from nobar.core.config import Config
+from nobar.core.arguments import parse_arguments
+from nobar.core.config import load_config
 
 
 async def main() -> None:
     """Initialize and start the application."""
-    arguments = Arguments().arguments
-    config = Config(arguments.config).config
+    arguments = parse_arguments()
+    config = load_config(arguments.config)
     app = App(arguments, config)
     await app.start()
 
