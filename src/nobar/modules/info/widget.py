@@ -1,17 +1,19 @@
-"""System info widget displaying workspace, layout, battery, and time."""
+"""System info widget composing individual labels."""
 
 from __future__ import annotations
 
 import i3ipc
-import psutil
 from i3ipc import ModeEvent, WindowEvent, WorkspaceEvent
 from i3ipc.events import IpcBaseEvent
-from PyQt6.QtCore import QDateTime, QEvent, QTimer
+from PyQt6.QtCore import QEvent, QTimer
 from PyQt6.QtGui import QEnterEvent
-from PyQt6.QtWidgets import QHBoxLayout, QLabel
-from xkbgroup import XKeyboard
+from PyQt6.QtWidgets import QHBoxLayout
 
 from nobar.core.panel import Panel
+from nobar.modules.info.battery import BatteryLabel
+from nobar.modules.info.clock import ClockLabel
+from nobar.modules.info.keyboard import KeyboardLabel
+from nobar.modules.info.workspace import WorkspaceLabel
 
 
 class Info(Panel):
@@ -21,22 +23,25 @@ class Info(Panel):
     events = (ModeEvent, WindowEvent, WorkspaceEvent)
 
     def __init__(self, connection: i3ipc.Connection, config: dict) -> None:
-        """Initialize info widget with label and update timer."""
+        """Initialize info widget with individual labels."""
         super().__init__(connection, config)
         self.setWindowTitle("nobar_info")
-
-        self._xkb = XKeyboard()
 
         tree = self._connection.get_tree()
         focused = tree.find_focused()
         self._focused_workspace = focused.workspace().name if focused else "?"
 
-        self._label = QLabel()
-        self._label.setFont(self._font)
-        self._label.setStyleSheet(self._style_sheet)
+        self._workspace = WorkspaceLabel(self._font, self._style_sheet)
+        self._keyboard = KeyboardLabel(self._font, self._style_sheet)
+        self._battery = BatteryLabel(self._font, config)
+        self._clock = ClockLabel(self._font, self._style_sheet)
 
         _layout = QHBoxLayout()
-        _layout.addWidget(self._label)
+        _layout.setSpacing(8)
+        _layout.addWidget(self._workspace)
+        _layout.addWidget(self._keyboard)
+        _layout.addWidget(self._battery)
+        _layout.addWidget(self._clock)
         self.setLayout(_layout)
 
         self._update_timer = QTimer(self)
@@ -48,20 +53,11 @@ class Info(Panel):
         self.show()
 
     def set_content(self) -> None:
-        """Update label with current system info."""
-        keyboard_layout = self._xkb.group_symbol.upper()
-
-        battery = psutil.sensors_battery()
-        percentage = round(battery.percent) if battery else "?"
-
-        time = QDateTime.currentDateTime().toString("hh:mm:ss")
-
-        if self._state == "resize":
-            info = self._state
-        else:
-            info = self._focused_workspace
-
-        self._label.setText(f"{info} {keyboard_layout} {percentage} {time}")
+        """Update all info labels."""
+        self._workspace.update_content(self._focused_workspace, self._state)
+        self._keyboard.update_content()
+        self._battery.update_content()
+        self._clock.update_content()
         self.adjustSize()
         self.set_position()
 
