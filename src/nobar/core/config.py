@@ -27,18 +27,6 @@ battery_charging_color = 'green'
 battery_color = 'white'
 battery_low_color = 'red'
 battery_threshold = 20
-
-[info_test]
-height = 40
-color = 'white'
-background = 'black'
-position = ['right', 0]
-screen = 0
-fade_out_on_hover = true
-battery_charging_color = 'green'
-battery_color = 'white'
-battery_low_color = 'red'
-battery_threshold = 20
 """
 
 
