@@ -49,9 +49,6 @@ class Info(Panel):
 
     def set_content(self) -> None:
         """Update label with current system info."""
-        if not self.isVisible():
-            return
-
         keyboard_layout = self._xkb.group_symbol.upper()
 
         battery = psutil.sensors_battery()

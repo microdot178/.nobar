@@ -97,7 +97,9 @@ class Panel(QWidget, metaclass=_PanelMeta):
             self.hide()
 
     def process_event(self, event: IpcBaseEvent) -> None:
-        """Handle fullscreen events."""
+        """Handle fullscreen and workspace events."""
+        if isinstance(event, i3ipc.WorkspaceEvent):
+            self.handle_fullscreen_mode()
         if isinstance(event, i3ipc.WindowEvent) and event.change == "fullscreen_mode":
             self.handle_fullscreen_mode()
 
