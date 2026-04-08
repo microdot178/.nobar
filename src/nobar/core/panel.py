@@ -5,6 +5,7 @@ from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 
 import i3ipc
+from i3ipc.aio import Connection
 from i3ipc.events import IpcBaseEvent
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QColor, QFont, QGuiApplication, QPalette
@@ -23,7 +24,7 @@ class Panel(QWidget, metaclass=_PanelMeta):
     name: str
     events: tuple[type, ...]
 
-    def __init__(self, connection: i3ipc.Connection, config: dict) -> None:
+    def __init__(self, connection: Connection, config: dict) -> None:
         """Initialize panel with i3 connection and widget config."""
         super().__init__()
 
@@ -58,6 +59,11 @@ class Panel(QWidget, metaclass=_PanelMeta):
             self._auto_hide_timer.timeout.connect(self.hide)
             self._auto_hide_timer.start(config["fade_out"])
 
+    async def init(self) -> None:
+        """Perform async initialization after construction."""
+        await self.set_content()
+        self.show()
+
     def set_position(self) -> None:
         """Position the panel on screen based on config."""
         position = self._config["position"]
@@ -72,10 +78,10 @@ class Panel(QWidget, metaclass=_PanelMeta):
 
         self.move(x, y)
 
-    def handle_fullscreen_mode(self) -> None:
+    async def handle_fullscreen_mode(self) -> None:
         """Hide or show panel based on fullscreen state."""
-        outputs = self._connection.get_outputs()
-        tree = self._connection.get_tree()
+        outputs = await self._connection.get_outputs()
+        tree = await self._connection.get_tree()
         screen = self._config["screen"]
 
         for workspace in tree.workspaces():
@@ -84,25 +90,28 @@ class Panel(QWidget, metaclass=_PanelMeta):
                     self.hide()
                 elif not self._manually_hidden:
                     self.show()
-                    self.set_content()
+                    await self.set_content()
 
-    def toggle(self) -> None:
+    async def toggle(self) -> None:
         """Toggle panel visibility with manual hide tracking."""
         if self._manually_hidden:
             self._manually_hidden = False
             self.show()
-            self.set_content()
+            await self.set_content()
         else:
             self._manually_hidden = True
             self.hide()
 
-    def process_event(self, event: IpcBaseEvent) -> None:
+    async def process_event(self, event: IpcBaseEvent) -> None:
         """Handle fullscreen and workspace events."""
-        if isinstance(event, i3ipc.WorkspaceEvent):
-            self.handle_fullscreen_mode()
-        if isinstance(event, i3ipc.WindowEvent) and event.change == "fullscreen_mode":
-            self.handle_fullscreen_mode()
+        is_workspace = isinstance(event, i3ipc.WorkspaceEvent)
+        is_fullscreen = (
+            isinstance(event, i3ipc.WindowEvent) and event.change == "fullscreen_mode"
+        )
+
+        if is_workspace or is_fullscreen:
+            await self.handle_fullscreen_mode()
 
     @abstractmethod
-    def set_content(self) -> None:
+    async def set_content(self) -> None:
         """Update widget content."""

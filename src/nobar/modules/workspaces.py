@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import asyncio
+
 import i3ipc
 from i3ipc import WindowEvent, WorkspaceEvent
+from i3ipc.aio import Connection
 from i3ipc.events import IpcBaseEvent
 from PyQt6.QtCore import QEvent, Qt
 from PyQt6.QtGui import QEnterEvent, QFont, QMouseEvent
@@ -17,7 +20,7 @@ class Workspace(QWidget):
 
     def __init__(
         self,
-        connection: i3ipc.Connection,
+        connection: Connection,
         workspace: i3ipc.WorkspaceReply,
         config: dict,
         font: QFont,
@@ -40,7 +43,7 @@ class Workspace(QWidget):
 
     def mousePressEvent(self, a0: QMouseEvent | None) -> None:  # noqa: N802
         """Switch to this workspace on click."""
-        self._connection.command(f"workspace {self._name}")
+        asyncio.ensure_future(self._connection.command(f"workspace {self._name}"))
 
 
 class Workspaces(Panel):
@@ -49,7 +52,7 @@ class Workspaces(Panel):
     name = "workspaces"
     events = (WorkspaceEvent, WindowEvent)
 
-    def __init__(self, connection: i3ipc.Connection, config: dict) -> None:
+    def __init__(self, connection: Connection, config: dict) -> None:
         """Initialize workspaces panel."""
         super().__init__(connection, config)
         self.setWindowTitle("nobar_workspaces")
@@ -59,10 +62,8 @@ class Workspaces(Panel):
         self._box_layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self._box_layout)
-        self.set_content()
-        self.show()
 
-    def set_content(self) -> None:
+    async def set_content(self) -> None:
         """Rebuild workspace buttons from current i3 state."""
 
         def sort_key(ws: i3ipc.WorkspaceReply) -> tuple[int, int | str]:
@@ -71,7 +72,7 @@ class Workspaces(Panel):
             except ValueError:
                 return (1, ws.name)
 
-        workspaces = sorted(self._connection.get_workspaces(), key=sort_key)
+        workspaces = sorted(await self._connection.get_workspaces(), key=sort_key)
 
         for i in reversed(range(self._box_layout.count())):
             self._box_layout.itemAt(i).widget().setParent(None)
@@ -86,16 +87,16 @@ class Workspaces(Panel):
         self.adjustSize()
         self.set_position()
 
-    def process_event(self, event: IpcBaseEvent) -> None:
+    async def process_event(self, event: IpcBaseEvent) -> None:
         """Rebuild workspace buttons on workspace events."""
         if isinstance(event, WorkspaceEvent):
             if not self._manually_hidden:
                 self.show()
-            self.set_content()
+            await self.set_content()
             if self._auto_hide_timer:
                 self._auto_hide_timer.start(self._config["fade_out"])
 
-        super().process_event(event)
+        await super().process_event(event)
 
     def enterEvent(self, event: QEnterEvent | None) -> None:  # noqa: N802
         """Stop auto-hide timer on mouse enter."""

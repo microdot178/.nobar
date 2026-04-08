@@ -10,12 +10,12 @@ from PyQt6.QtWidgets import QLabel
 class BatteryLabel(QLabel):
     """Displays battery percentage with color based on state."""
 
-    def __init__(self, font: QFont, config: dict) -> None:
+    def __init__(self, font: QFont, style: str, config: dict) -> None:
         """Initialize battery label with color config."""
         super().__init__()
         self.setFont(font)
+        self._default_style = style
         self._charging_color = config.get("battery_charging_color", "green")
-        self._normal_color = config.get("battery_color", config["color"])
         self._low_color = config.get("battery_low_color", "red")
         self._threshold = config.get("battery_threshold", 20)
 
@@ -29,10 +29,8 @@ class BatteryLabel(QLabel):
         self.setText(str(round(battery.percent)))
 
         if battery.power_plugged:
-            color = self._charging_color
+            self.setStyleSheet(f"color: {self._charging_color}")
         elif battery.percent < self._threshold:
-            color = self._low_color
+            self.setStyleSheet(f"color: {self._low_color}")
         else:
-            color = self._normal_color
-
-        self.setStyleSheet(f"color: {color}")
+            self.setStyleSheet(self._default_style)

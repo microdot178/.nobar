@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
-import i3ipc
+import asyncio
+
 from i3ipc import ModeEvent, WindowEvent, WorkspaceEvent
+from i3ipc.aio import Connection
 from i3ipc.events import IpcBaseEvent
 from PyQt6.QtCore import QEvent, QTimer
 from PyQt6.QtGui import QEnterEvent
@@ -22,18 +24,16 @@ class Info(Panel):
     name = "info"
     events = (ModeEvent, WindowEvent, WorkspaceEvent)
 
-    def __init__(self, connection: i3ipc.Connection, config: dict) -> None:
+    def __init__(self, connection: Connection, config: dict) -> None:
         """Initialize info widget with individual labels."""
         super().__init__(connection, config)
         self.setWindowTitle("nobar_info")
 
-        tree = self._connection.get_tree()
-        focused = tree.find_focused()
-        self._focused_workspace = focused.workspace().name if focused else "?"
+        self._focused_workspace = "?"
 
         self._workspace = WorkspaceLabel(self._font, self._style_sheet)
         self._keyboard = KeyboardLabel(self._font, self._style_sheet)
-        self._battery = BatteryLabel(self._font, config)
+        self._battery = BatteryLabel(self._font, self._style_sheet, config)
         self._clock = ClockLabel(self._font, self._style_sheet)
 
         _layout = QHBoxLayout()
@@ -45,14 +45,22 @@ class Info(Panel):
         self.setLayout(_layout)
 
         self._update_timer = QTimer(self)
-        self._update_timer.timeout.connect(self.set_content)
+        self._update_timer.timeout.connect(
+            lambda: asyncio.ensure_future(self.set_content())
+        )
         self._update_timer.start(1000)
 
         self.setFixedHeight(self._config["height"])
-        self.set_content()
+
+    async def init(self) -> None:
+        """Fetch initial workspace and populate content."""
+        tree = await self._connection.get_tree()
+        focused = tree.find_focused()
+        self._focused_workspace = focused.workspace().name if focused else "?"
+        await self.set_content()
         self.show()
 
-    def set_content(self) -> None:
+    async def set_content(self) -> None:
         """Update all info labels."""
         self._workspace.update_content(self._focused_workspace, self._state)
         self._keyboard.update_content()
@@ -61,7 +69,7 @@ class Info(Panel):
         self.adjustSize()
         self.set_position()
 
-    def process_event(self, event: IpcBaseEvent) -> None:
+    async def process_event(self, event: IpcBaseEvent) -> None:
         """Handle mode and workspace events."""
         if isinstance(event, ModeEvent):
             self._state = event.change
@@ -70,9 +78,9 @@ class Info(Panel):
             self._focused_workspace = event.current.name
 
         if isinstance(event, (ModeEvent, WorkspaceEvent)):
-            self.set_content()
+            await self.set_content()
 
-        super().process_event(event)
+        await super().process_event(event)
 
     def enterEvent(self, event: QEnterEvent | None) -> None:  # noqa: N802
         """Hide widget on mouse hover."""
